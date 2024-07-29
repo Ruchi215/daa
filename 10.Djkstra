@@ -1,0 +1,69 @@
+#include <stdio.h>
+
+#include <limits.h>
+
+#define INF INT_MAX // Infinity value for unreachable nodes
+
+void Dijkstra(int n, int a[10][10], int source);
+
+void main() {
+    int n, a[10][10], i, j, source;
+
+    printf("Enter the Number of Nodes\n");
+    scanf("%d", &n);
+
+    printf("Enter the Adjacency Matrix\n");
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <= n; j++)
+            scanf("%d", &a[i][j]);
+
+    printf("Enter the Source Node\n");
+    scanf("%d", &source);
+
+    Dijkstra(n, a, source);
+}
+
+void Dijkstra(int n, int a[10][10], int source) {
+    int distance[10], visited[10], count, min_distance, next_node, i, j;
+
+    // Initialization
+    for (i = 1; i <= n; i++) {
+        distance[i] = INF;
+        visited[i] = 0;
+    }
+    distance[source] = 0;
+
+    // Dijkstra's algorithm
+    for (count = 1; count <= n; count++) {
+        min_distance = INF;
+
+        // Find the unvisited node with the minimum distance
+        for (i = 1; i <= n; i++) {
+            if (!visited[i] && distance[i] < min_distance) {
+                min_distance = distance[i];
+                next_node = i;
+            }
+        }
+
+        // Mark the node as visited
+        visited[next_node] = 1;
+
+        // Update the distance of the adjacent nodes
+        for (i = 1; i <= n; i++) {
+            if (!visited[i] && a[next_node][i] && distance[next_node] != INF &&
+                distance[next_node] + a[next_node][i] < distance[i]) {
+                distance[i] = distance[next_node] + a[next_node][i];
+            }
+        }
+    }
+
+    // Print the shortest distances
+    printf("Node\tDistance from Source\n");
+    for (i = 1; i <= n; i++) {
+        if (distance[i] == INF) {
+            printf("%d\tINF\n", i);
+        } else {
+            printf("%d\t%d\n", i, distance[i]);
+        }
+    }
+}
