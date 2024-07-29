@@ -1,0 +1,76 @@
+#include <stdio.h>
+
+#include <limits.h>
+
+#define INF INT_MAX // Infinity value for unreachable nodes
+
+int prims(int n, int a[10][10], int source);
+
+void main() {
+    int n, a[10][10], i, j, source, mstcost;
+
+    printf("Enter the Number of Nodes\n");
+    scanf("%d", &n);
+
+    printf("Enter the Adjacency Matrix\n");
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <= n; j++)
+            scanf("%d", &a[i][j]);
+
+    printf("Enter the Source Node\n");
+    scanf("%d", &source);
+
+    mstcost = prims(n, a, source);
+
+    printf("The cost of MST is %d\n", mstcost);
+}
+
+int prims(int n, int a[10][10], int source) {
+    int cost[10][10], distance[10], visited[10], from[10];
+    int i, j, min_cost = 0, min_distance, u, v;
+
+    // Initialize the cost matrix, visited array, and distance array
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n; j++) {
+            if (a[i][j] == 0)
+                cost[i][j] = INF;
+            else
+                cost[i][j] = a[i][j];
+        }
+    }
+
+    for (i = 1; i <= n; i++) {
+        distance[i] = cost[source][i];
+        from[i] = source;
+        visited[i] = 0;
+    }
+
+    visited[source] = 1;
+    distance[source] = 0;
+
+    // Prim's algorithm
+    for (i = 1; i < n; i++) {
+        min_distance = INF;
+
+        // Find the unvisited node with the minimum distance
+        for (j = 1; j <= n; j++) {
+            if (!visited[j] && distance[j] < min_distance) {
+                min_distance = distance[j];
+                u = j;
+            }
+        }
+
+        visited[u] = 1;
+        min_cost += cost[from[u]][u];
+
+        // Update the distance array
+        for (v = 1; v <= n; v++) {
+            if (!visited[v] && cost[u][v] < distance[v]) {
+                distance[v] = cost[u][v];
+                from[v] = u;
+            }
+        }
+    }
+
+    return min_cost;
+}
