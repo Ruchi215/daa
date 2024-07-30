@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+#define MAX 10
+
+// Function to perform DFS
+void dfs(int node, int visited[], int a[MAX][MAX], int result[], int *index, int n) {
+    visited[node] = 1;
+
+    for (int i = 0; i < n; i++) {
+        if (a[node][i] == 1 && !visited[i]) {
+            dfs(i, visited, a, result, index, n);
+        }
+    }
+
+    // Place the node in the result array after processing all its descendants
+    result[*index] = node;
+    (*index)--;
+}
+
+// Function to perform topological sort
+void topologicalSort(int a[MAX][MAX], int n) {
+    int visited[MAX] = {0};
+    int result[MAX];
+    int index = n - 1;
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            dfs(i, visited, a, result, &index, n);
+        }
+    }
+
+    printf("Topological Sort: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", result[i]);
+    }
+    printf("\n");
+}
+
+// Main function
+int main() {
+    int n, a[MAX][MAX];
+
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &a[i][j]);
+        }
+    }
+
+    topologicalSort(a, n);
+
+    return 0;
+}
